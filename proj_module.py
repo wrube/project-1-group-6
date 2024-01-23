@@ -1,8 +1,10 @@
 from geopy.geocoders import Nominatim
+import pandas as pd
 import geopy
 from datetime import datetime
 from geopy.distance import geodesic
 from shapely.ops import nearest_points
+from pathlib import Path
 
 
 def get_country(lat, lon):
@@ -56,7 +58,25 @@ def convert_milliseconds_to_year_month_day(timestamp_ms):
     return year, month, day
 
 
+def consolidate_csv_files(directory, min_filename_length):
+    # List all CSV files in the directory
+    csv_files = [file for file in Path(directory).rglob('*.csv') if len(file.name) >= min_filename_length]
+
+    # Read each CSV file into a DataFrame
+    dataframes = []
+    for file in csv_files:
+        df = pd.read_csv(file)
+        dataframes.append(df)
+
+    # Merge DataFrames into a single DataFrame
+    merged_df = pd.concat(dataframes, ignore_index=True)
+
+    return merged_df
+
 ################### below this line is experimental ######################
+
+
+
 
 def find_location_info(latitude, longitude):
     geolocator = Nominatim(user_agent="location_info_finder")
