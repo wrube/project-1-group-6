@@ -1,11 +1,16 @@
 from geopy.geocoders import Nominatim
+import numpy as np
 import pandas as pd
 import geopy
 from datetime import datetime
+import geopandas as gpd
 from geopy.distance import geodesic
 from shapely.ops import nearest_points
 from pathlib import Path
+from shapely.geometry import Point
+from pprint import pprint
 
+crs_code = "EPSG:4326"
 
 def get_country(lat, lon):
     """This function will return the country of the input latitude and longitude. This function utilises the geopy module
@@ -74,6 +79,54 @@ def consolidate_csv_files(directory, min_filename_length):
 
     return merged_df
 
+def count_earthquakes_in_country_in_year(countries, earthquakes, year, countries_buffered=False):
+    earthquakes_in_year = earthquakes.loc[earthquakes["year"] == year]
+    joined_gdf = gpd.sjoin(earthquakes_in_year, countries, how='inner', predicate='within')
+
+    if countries_buffered:
+        buffered = " within 2deg border"
+    else:
+        buffered = ""
+    
+    # Count the number of points within each polygon
+    earthquake_counts = pd.DataFrame(joined_gdf.groupby('NAME').size()).rename(columns = {0: f"Earthquake count{buffered} {year}"})
+    return earthquake_counts
+
+def create_buffer_with_degrees(gdf, buffer_radius_deg):
+    buffered_gdf = gdf.copy()
+    buffered_gdf['geometry'] = buffered_gdf['geometry'].buffer(buffer_radius_deg)
+    return buffered_gdf
+
+def convert_df_to_gdf(dataframe, lon_column, lat_column, crs_code):
+    geometry = [Point(xy) for xy in zip(dataframe[lon_column], dataframe[lat_column])]
+    gdf = gpd.GeoDataFrame(dataframe, geometry=geometry, crs=crs_code)
+    return gdf
+
+def create_world_bin_dataframe():
+    # create rectangular bins
+    bin_size = 10 # degree increments
+    start_lat = -90
+    end_lat = 90
+    start_long = -180
+    end_long = 180
+
+    min_lats = np.arange(start_lat, end_lat, bin_size)
+    max_lats = np.arange(start_lat + bin_size, end_lat, bin_size)
+    min_longs = np.arange(start_long, end_long, bin_size)
+    max_longs = np.arange(start_long + bin_size, end_long, bin_size)
+
+    # create rectangular limits array with subarrays with elements [minimum_latitude, maximum_latitude, minimum_longitude, maximum_longitude]
+    bins = {}
+    for i in range(len(min_lats)):
+        for j in range(len(min_longs)):
+            bins[f"{i}_{j}"] = {
+                "bin_lat": min_lats[i] + bin_size/2,
+                "bin_lon": min_longs[j] + bin_size/2
+                }
+    earthquake_spatial_distribution = pd.DataFrame(bins).T
+    earthquake_spatial_distribution.rename_axis("bin_id", inplace=True)
+    return earthquake_spatial_distribution
+
 ################### below this line is experimental ######################
 
 
@@ -134,15 +187,5 @@ def find_nearest_country_and_distance(latitude, longitude):
     return country_name, distance
 
 if __name__ == "__main__":
-    # Example coordinates (somewhere in the Atlantic Ocean)
-    latitude_ocean = 0.0
-    longitude_ocean = -30.0
-
-    # Find nearest country and distance
-    country, distance = find_nearest_country_and_distance(latitude_ocean, longitude_ocean)
-
-    if country is not None and distance is not None:
-        print(f"The coordinates {latitude_ocean}, {longitude_ocean} are nearest to {country}.")
-        print(f"Distance to nearest land: {distance:.2f} kilometers.")
-    else:
-        print("Unable to determine the nearest country and distance.")
+    df = create_world_bin_dataframe()
+    print(df)
