@@ -71,6 +71,7 @@ def consolidate_csv_files(directory, min_filename_length):
     dataframes = []
     for file in csv_files:
         df = pd.read_csv(file)
+        print(file)
         # print(f"number of columns in df is {len(df.columns)}")
         dataframes.append(df)
 
