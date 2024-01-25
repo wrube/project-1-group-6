@@ -1,6 +1,8 @@
 # ignore the mac .DSstore
 .DS_Store
 
+# ignore the coderunners script
+tempCodeRunnerFile.py
 
 # ignore Opened Microsoft applications
 ~*.*x
