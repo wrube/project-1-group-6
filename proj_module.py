@@ -71,7 +71,6 @@ def consolidate_csv_files(directory, min_filename_length):
     dataframes = []
     for file in csv_files:
         df = pd.read_csv(file)
-        print(file)
         # print(f"number of columns in df is {len(df.columns)}")
         dataframes.append(df)
 
@@ -129,63 +128,6 @@ def create_world_bin_dataframe():
     return earthquake_spatial_distribution
 
 ################### below this line is experimental ######################
-
-
-
-
-def find_location_info(latitude, longitude):
-    geolocator = Nominatim(user_agent="location_info_finder")
-
-    try:
-        # Perform reverse geocoding
-        location = geolocator.reverse((latitude, longitude), language='en')
-
-        # Extract the location type
-        geo_type = location.raw.get("type")
-
-        if geo_type == 'land':
-
-            # Extract country, water body, and land/water information
-            country = location.raw['address'].get('country', 'Country not found')
-        else:
-
-            water_body = location.raw['address'].get('ocean', 'Body of water not found')
-            country = "unknown"
-        
-
-        return country, water_body, geo_type
-
-    except Exception as e:
-        print(f"Error: {e}")
-        return None, None, None
-    
-
-def find_nearest_country_and_distance(latitude, longitude):
-    # Perform reverse geocoding to get the country's name
-    geolocator = Nominatim(user_agent="nearest_country_finder", timeout=10)
-    location = geolocator.reverse((latitude, longitude), language='en')
-    country_name = location.raw['address'].get('country', 'Country not found')
-
-    # Use GeoPandas to retrieve the country's geometry
-    gdf = gpd.tools.geocode(country_name, provider='nominatim', user_agent="nearest_country_finder")
-    
-    if gdf.empty:
-        print("Unable to retrieve country geometry.")
-        return None, None
-
-    # Extract the country's geometry
-    country_geometry = gdf['geometry'].iloc[0]
-
-    # Convert the given latitude and longitude to a Shapely Point
-    target_point = Point(longitude, latitude)
-
-    # Find the nearest point on the country's geometry to the target point
-    nearest_point_country, _ = nearest_points(country_geometry, target_point)
-
-    # Calculate distance using Haversine formula
-    distance = nearest_point_country.distance(target_point)
-
-    return country_name, distance
 
 if __name__ == "__main__":
     df = create_world_bin_dataframe()
