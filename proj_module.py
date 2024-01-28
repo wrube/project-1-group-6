@@ -92,6 +92,15 @@ def count_earthquakes_in_country_in_year(countries, earthquakes, year, countries
     earthquake_counts = pd.DataFrame(joined_gdf.groupby('NAME').size()).rename(columns = {0: f"Earthquake count{buffered} {year}"})
     return earthquake_counts
 
+def max_earthquake_magnitude_per_country(countries, countries_ext_boundary, earthquakes):
+    joined_gdf = gpd.sjoin(earthquakes, countries_ext_boundary, how='inner', predicate='within')
+    
+    # Find the maximum magnitude in each country
+    temp = pd.DataFrame(joined_gdf.groupby('NAME'))
+    # max_magnitudes_in_country = pd.DataFrame(joined_gdf.groupby('NAME').max()).rename(columns = {0: f"Max earthquake magnitude"})
+    # countries = countries.merge(max_magnitudes_in_country, on='country', how='left')
+    return temp
+
 def create_buffer_with_degrees(gdf, buffer_radius_deg):
     buffered_gdf = gdf.copy()
     buffered_gdf['geometry'] = buffered_gdf['geometry'].buffer(buffer_radius_deg)
@@ -129,63 +138,18 @@ def create_world_bin_dataframe():
 
 ################### below this line is experimental ######################
 
-
-
-
-def find_location_info(latitude, longitude):
-    geolocator = Nominatim(user_agent="location_info_finder")
-
-    try:
-        # Perform reverse geocoding
-        location = geolocator.reverse((latitude, longitude), language='en')
-
-        # Extract the location type
-        geo_type = location.raw.get("type")
-
-        if geo_type == 'land':
-
-            # Extract country, water body, and land/water information
-            country = location.raw['address'].get('country', 'Country not found')
-        else:
-
-            water_body = location.raw['address'].get('ocean', 'Body of water not found')
-            country = "unknown"
-        
-
-        return country, water_body, geo_type
-
-    except Exception as e:
-        print(f"Error: {e}")
-        return None, None, None
-    
-
-def find_nearest_country_and_distance(latitude, longitude):
-    # Perform reverse geocoding to get the country's name
-    geolocator = Nominatim(user_agent="nearest_country_finder", timeout=10)
-    location = geolocator.reverse((latitude, longitude), language='en')
-    country_name = location.raw['address'].get('country', 'Country not found')
-
-    # Use GeoPandas to retrieve the country's geometry
-    gdf = gpd.tools.geocode(country_name, provider='nominatim', user_agent="nearest_country_finder")
-    
-    if gdf.empty:
-        print("Unable to retrieve country geometry.")
-        return None, None
-
-    # Extract the country's geometry
-    country_geometry = gdf['geometry'].iloc[0]
-
-    # Convert the given latitude and longitude to a Shapely Point
-    target_point = Point(longitude, latitude)
-
-    # Find the nearest point on the country's geometry to the target point
-    nearest_point_country, _ = nearest_points(country_geometry, target_point)
-
-    # Calculate distance using Haversine formula
-    distance = nearest_point_country.distance(target_point)
-
-    return country_name, distance
-
 if __name__ == "__main__":
-    df = create_world_bin_dataframe()
-    print(df)
+    countries_path = Path("./input_data/world_countries/ne_10m_admin_0_countries_lakes.shp")
+    countries = gpd.read_file(countries_path)
+    countries_gdf = countries[["NAME", "ABBREV", "BRK_A3", "POP_EST", "POP_YEAR", "GDP_MD", "GDP_YEAR", "ECONOMY", "INCOME_GRP", "CONTINENT", "SUBREGION", "geometry"]]
+
+    countries_buff_path = Path("./output_data/buffered_countries.shp")
+    countries_extended = gpd.read_file(countries_buff_path)
+
+    earthquake_path = f"./output_data/earthquakes_2010_2023.shp"
+    earthquakes_gdf = gpd.read_file(earthquake_path)
+
+
+    countries_new = max_earthquake_magnitude_per_country(countries_gdf, countries_ext_boundary=countries_extended, earthquakes=earthquakes_gdf)
+    
+    
