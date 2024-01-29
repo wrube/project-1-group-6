@@ -64,14 +64,23 @@ def convert_milliseconds_to_year_month_day(timestamp_ms):
 
 
 def consolidate_csv_files(directory, min_filename_length):
+    """Rolls all csv files in a given directory into a single DataFrame. The filenames will only
+    be selected if the files have a minimum filename length.    
+
+    Args:
+        directory (string): Directory location of the csv files
+        min_filename_length (integer): The minimum length of the csv files
+
+    Returns:
+        DataFrame: Concatinated single DataFrame of all the csv files
+    """
     # List all CSV files in the directory
     csv_files = [file for file in Path(directory).rglob('*.csv') if len(file.name) >= min_filename_length]
 
-    # Read each CSV file into a DataFrame
+    # Read each CSV file into a DataFrame and add to the dataframes list
     dataframes = []
     for file in csv_files:
         df = pd.read_csv(file)
-        # print(f"number of columns in df is {len(df.columns)}")
         dataframes.append(df)
 
     # Merge DataFrames into a single DataFrame
@@ -79,7 +88,19 @@ def consolidate_csv_files(directory, min_filename_length):
 
     return merged_df
 
+
 def count_earthquakes_in_country_in_year(countries, earthquakes, year, countries_buffered=False):
+    """Returns a DataFrame that contains the number of earthquakes for a country in given year
+
+    Args:
+        countries (GeoDataFrame): Country border GeoDataFrame
+        earthquakes (GeoDataFrame): Point type GeoDataFrame with earthquake data
+        year (integer): Year of interest
+        countries_buffered (bool, optional): If True it will provide extra description in the column name. Defaults to False.
+
+    Returns:
+        DataFrame: Countries with the number of earthquakes per country in a given year
+    """
     earthquakes_in_year = earthquakes.loc[earthquakes["year"] == year]
     joined_gdf = gpd.sjoin(earthquakes_in_year, countries, how='inner', predicate='within')
 
@@ -92,14 +113,21 @@ def count_earthquakes_in_country_in_year(countries, earthquakes, year, countries
     earthquake_counts = pd.DataFrame(joined_gdf.groupby('NAME').size()).rename(columns = {0: f"Earthquake count{buffered} {year}"})
     return earthquake_counts
 
+
 def max_earthquake_magnitude_per_country(countries, countries_ext_boundary, earthquakes):
-    joined_gdf = gpd.sjoin(earthquakes, countries_ext_boundary, how='inner', predicate='within')
+    joined_gdf = gpd.sjoin(earthquakes, countries_ext_boundary, how='left', predicate='within')
+    
+    columns_of_interest = ["NAME", "magnitude", ]
     
     # Find the maximum magnitude in each country
-    temp = pd.DataFrame(joined_gdf.groupby('NAME'))
-    # max_magnitudes_in_country = pd.DataFrame(joined_gdf.groupby('NAME').max()).rename(columns = {0: f"Max earthquake magnitude"})
-    # countries = countries.merge(max_magnitudes_in_country, on='country', how='left')
-    return temp
+    max_mag_earthquake = joined_gdf[columns_of_interest].groupby('NAME').max()
+
+    # merge max magnitude earthquakes with counties
+    new_countries = countries.merge(max_mag_earthquake, on='NAME', how='left').rename( \
+        columns={"magnitude": "maximum magnitude of earthquake",
+                 "NAME": "country"
+                 })
+    return new_countries
 
 def create_buffer_with_degrees(gdf, buffer_radius_deg):
     buffered_gdf = gdf.copy()
