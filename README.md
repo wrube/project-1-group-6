@@ -29,6 +29,13 @@ To run the notebooks in this project please use the yaml file `environment_requi
 
 # Analysis of Data
 
+## Data Retrieval
+
+### Earthquake Data
+
+### Country Data
+
+
 ## Assumptions and Filters
 To reduce the size of the dataset, we’ve needed to filter out earthquakes from the data retrieval. We used the following:
 - restricting earthquake magnitude to greater or equal to 5 
@@ -64,3 +71,13 @@ Most frequent occurrence of earthquakes between 2010 and 2023 are in a depth of 
  ![Getting Started](./images/maximum_earthquake_magnitude1.png)
 
  ![Getting Started](./images/maximum_earthquake_magnitude_2.png)
+
+ ## Earthquake Casualty Analysis by Country
+
+
+ ## Summary
+
+### Key Findings
+
+### Recommendations
+
