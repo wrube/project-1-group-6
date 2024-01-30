@@ -71,11 +71,34 @@ Upon viewing the earthquakes in mapview with `hvplot`, it was noted that some ma
 
 
 
-
-
 ## Analysis of Earthquake counts Per Country
+To perform this analysis, we filtered the data into 2 parts i.e., earthquakes happened on land and earthquakes happened on extended borders within 2 degrees, can be on land or in teh ocean.
+The below image gives the clear picture of land and extended borders
+![Alt text](<Extended Borders_Eg.png>)
 
+**Total number of earthquakes on land : 8124**
 
+**Total number of earthquakes including extended borders : 24161**
+
+### Top 10 countries with highest frequency of earthquakes​
+
+Below image shows the top_10 countries with highest earthquake frequency both on land and inclusive of extended borders. Needless to say, Indonesia is the country with highest earthquake frequency followed by Japan and Papua New Guinea.
+The position of the countries might have altered a bit but there is no significant change in the list of top_10 countries.
+
+![Alt text](Top_10_countries.png)
+
+### Highest frequency of earthquakes by year
+
+Below image shows the earthquake frequency of each country on a yearly basis starting from 2010 – 2023.
+1st plot is the area graph of top_10 countries and the trend of the earthquakes on land and 2nd plot shows the trend of earthquakes including extended borders
+
+![Alt text](Highest_freq_by_year.png)
+
+### Spatial view of the earthquakes frequency
+
+In the below image, the countries highlighed in red, orange, yellow are the ones with highest earthquake frequency.
+
+![Alt text](spatial_view_3.jpg)
 
 ## Analysis of Earthquake Magnitude and Depth
 
