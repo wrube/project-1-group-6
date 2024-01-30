@@ -29,25 +29,48 @@ To run the notebooks in this project please use the yaml file `environment_requi
 
 # Analysis of Data
 
+### Data Location
+- During the course of the project, any output datafiles from API extraction or dataframe generation are kept in the `/output_data/` directory.
+- Additional datasets from "Our World in Data" and "Natural Earth Data" is stored in the `/input_data/` directory.
+- Any images used in presenations or this README are located in the `/images/` directory.
+- Additional functions that were used repeatedly or to improve code readability through the project are stored in the `project_modules.py` file.
+
+### Assumptions and Filters
+To reduce the size of the dataset, we’ve needed to filter out earthquakes from the data retrieval. We used the following:
+- restricting earthquake magnitude to greater or equal to 5 
+- retrieving data from 2010-2023
+- filtering out earthquakes with a recorded depth of greater than 100km
 
 ## Data Retrieval
 
 
 ### Earthquake Data Retrieval Through USGS API  
 
-The scripts used in the earthquake data retrieval are found in the notebook `generate_dataset.ipynb`. 
+The scripts used in the earthquake data retrieval are found in the notebook `generate_dataset.ipynb`. Additional notes of the individual steps taken to retrieve the earthquake data is found this notebook.
+
+It was decided to break the API requests into geo-bins and monthly increments from 2010-2023 to provide monthly save points if an inevitable connection issues. An example of the 10 degree bins are shown below.
+
+![geo bins](images/geo_bins.png) 
+
+It should be noted that in the process of generating this dataset, the *GeoPy* Python module was used to geolocate the country where the earthquake epicentre was located. If no country was found, it is assumed to be offshore. If GeoPy could threw an `AttributeError`, an error was put in place of country. 
+
+
+
+
 
 
 ### Viewing Data
 
-Combining the monthly earthquake outputs in csv file outputs from the USGS data retrieval are found
+Combining the monthly earthquake outputs in csv file outputs from the USGS data retrieval are found in the notebook `view_datasets.ipynb`. The combined and cleaned up dataset is in 2 formats, csv and shapefile (shp) with the name `earthquakes_2010_2023` in the `output_data` subdirectory.
+
+During the earthquake data retrieval process via GeoPy, a country error was printed in the `country` column of the full dataset 28 times. A successful effort was to retry the GeoPy module for those particular earthquakes.
+
+Upon viewing the earthquakes in mapview with `hvplot`, it was noted that some major earthquakes were not being captured that were nearby certain countries and did have an effect on that country. Examples of this are the 2011 Japan earthquake and the 2023 Syrian earthquake where Turkey was also heavily impacted. Therefore a buffered country border was with 2 degrees (~220km) was generated around each country to capture these nearby earthquakes. This procedure was done with *GeoPandas*.
 
 
-## Assumptions and Filters
-To reduce the size of the dataset, we’ve needed to filter out earthquakes from the data retrieval. We used the following:
-- restricting earthquake magnitude to greater or equal to 5 
-- retrieving data from 2010-2023
-- filtering out earthquakes with a recorded depth of greater than 100km
+
+
+
 
 
 ## Analysis of Earthquake counts Per Country
@@ -122,7 +145,10 @@ A set of bar charts presenting the total number of deaths, the total number of p
     - We observed the countries that have the highest cumulative causality rates from earthquakes. 
     - We observed that poorly developed nations suffer greatest economic impact from earthquakes. 
     - The death-to-affected ratio may be influenced to a country’s economic status (preparedness). The Japan outlier suggests that the earthquake magnitude also has a role to play
-    - 
+  
 ### Recommendations
+- Further investigate the link between tidal fluctuations and earthquake occurrence
+- Broaden the filters out of magnitude and depth
+
 
 
