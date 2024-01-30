@@ -69,9 +69,10 @@ The figure below visualises all the earthquake epicentres along with the extende
 ![All earthquakes and buffered borders](images/earthquake_epicentres_country_buffers.png)
 
 ## Analysis of Earthquake counts Per Country
-To perform this analysis, we filtered the data into 2 parts i.e., earthquakes happened on land and earthquakes happened on extended borders within 2 degrees, can be on land or in teh ocean.
+To perform this analysis, we filtered the data into 2 parts i.e., earthquakes happened on land and earthquakes happened on extended borders within 2 degrees, can be on land or in the ocean.
 The below image gives the clear picture of land and extended borders
-![Getting Started](<Extended Borders_Eg.png>)
+
+![Getting Started](images/Extended%20Borders_Eg.png)
 
 **Total number of earthquakes on land : 8124**
 
@@ -82,20 +83,20 @@ The below image gives the clear picture of land and extended borders
 Below image shows the top_10 countries with highest earthquake frequency both on land and inclusive of extended borders. Needless to say, Indonesia is the country with highest earthquake frequency followed by Japan and Papua New Guinea.
 The position of the countries might have altered a bit but there is no significant change in the list of top_10 countries.
 
-![Getting Started](Top_10_countries.png)
+![Getting Started](images/Top_10_countries.png)
 
 ### Highest frequency of earthquakes by year
 
 Below image shows the earthquake frequency of each country on a yearly basis starting from 2010 – 2023.
 1st plot is the area graph of top_10 countries and the trend of the earthquakes on land and 2nd plot shows the trend of earthquakes including extended borders
 
-![Getting Started](Highest_freq_by_year.png)
+![Getting Started](images/Highest_freq_by_year.png)
 
 ### Spatial view of the earthquakes frequency
 
 In the below image, the countries highlighed in red, orange, yellow are the ones with highest earthquake frequency.
 
-![Getting Started](spatial_view_3.jpg)
+![Getting Started](images/spatial_view_3.jpg)
 
 ## Analysis of Earthquake Magnitude and Depth
 The analysis of earthquake magnitude and generated figures are available in the `earthquakes_magnitude_analysis_ben.ipynb`.
@@ -104,9 +105,9 @@ Most of earthquakes from 2010 to 2023 are between 5 and 6 magnitude.
 Most frequent occurrence of earthquakes between 2010 and 2023 are in a depth of below 20 km.​ Earthquakes with the depth of 20 and 40 km and 40 and 60 km occurred less.
 Both of the images skewed to the left of the graphs.
 
-![Getting Started](./images/depth_earthquake.png)
+![Getting Started](images/depth_earthquake.png)
 
-![Getting Started](./images/magnitude_histogram.png)
+![Getting Started](images/magnitude_histogram.png)
 
  #There is no significant relationship between earthquake magnitude and depth since the correlation coefficient is -0.06.
 
