@@ -13,7 +13,7 @@ When we were initially brainstorming ideas for this project, we came up with the
 1.	Successfully retrieve earthquake data from various open API sources 
 2.	Look at the distribution and spatial characteristics of the magnitudes of earthquakes. Is there any correlation between earthquake magnitude and depth? 
 3.	Record the number of earthquakes across different countries and globally. Rank these countries by the number of earthquakes and through time. Analyse the spatial distribution of the number of earthquakes. 
-4.	Investigate the frequency of earthquakes per month and year. Analyse this spatially - Richard
+4.	Investigate the frequency of earthquakes per month and year. Analyse this spatially
 5.	Investigate what are the relationships between magnitude of earthquake and causality rates and determine which countries are most affected. Is there a relationship between causality rates and a countries economic status? 
 6.	*Stretch Question*: Is it possible to correlate tidal fluctuations with earthquake occurrence?
 
@@ -29,11 +29,18 @@ To run the notebooks in this project please use the yaml file `environment_requi
 
 # Analysis of Data
 
+
 ## Data Retrieval
 
-### Earthquake Data
 
-### Country Data
+### Earthquake Data Retrieval Through USGS API  
+
+The scripts used in the earthquake data retrieval are found in the notebook `generate_dataset.ipynb`. 
+
+
+### Viewing Data
+
+Combining the monthly earthquake outputs in csv file outputs from the USGS data retrieval are found
 
 
 ## Assumptions and Filters
@@ -78,6 +85,14 @@ Most frequent occurrence of earthquakes between 2010 and 2023 are in a depth of 
  ## Summary
 
 ### Key Findings
-
+- We were able to successfully use the USGS API interface to retrieve >20000 earthquakes from 2010 to 2023
+- We were successfully able to capture the number of earthquakes across different countries. We ranked these countries by the number of earthquakes and through space & time. We also used an extended boundary of countries to catch earthquakes nearby to other countries which could impact that country
+- We observed the left skewedness of earthquake magnitude and depth & found that there were no correlations between depth and magnitude
+- We observed the spatial distribution of maximum magnitude of earthquakes and ranked countries by largest earthquake magnitude experienced. 
+- Effect of earthquakes:
+    - We observed the countries that have the highest cumulative causality rates from earthquakes. 
+    - We observed that poorly developed nations suffer greatest economic impact from earthquakes. 
+    - The death-to-affected ratio may be influenced to a country’s economic status (preparedness). The Japan outlier suggests that the earthquake magnitude also has a role to play
+    - 
 ### Recommendations
 
