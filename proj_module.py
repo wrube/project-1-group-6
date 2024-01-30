@@ -72,10 +72,12 @@ def consolidate_csv_files(directory, min_filename_length):
         min_filename_length (integer): The minimum length of the csv files
 
     Returns:
-        DataFrame: Concatinated single DataFrame of all the csv files
+        DataFrame: Concatenated single DataFrame of all the csv files
     """
     # List all CSV files in the directory
     csv_files = [file for file in Path(directory).rglob('*.csv') if len(file.name) >= min_filename_length]
+
+   
 
     # Read each CSV file into a DataFrame and add to the dataframes list
     dataframes = []
@@ -83,8 +85,9 @@ def consolidate_csv_files(directory, min_filename_length):
         df = pd.read_csv(file)
         dataframes.append(df)
 
+
     # Merge DataFrames into a single DataFrame
-    merged_df = pd.concat(dataframes, ignore_index=False, join='inner')
+    merged_df = pd.concat(dataframes)#, join='inner')
 
     return merged_df
 
